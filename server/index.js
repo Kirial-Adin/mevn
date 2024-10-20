@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const authRouter = require("./routes/auth.routes");
 const fileRouter = require("./routes/file.routes");
+const fileUpload = require("express-fileupload")
 const cookieParser = require('cookie-parser')
 const cors = require("cors");
 
@@ -10,6 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
+app.use(fileUpload({}))
 app.use(cors({
     credentials: true,
     origin: 'http://localhost:5173'

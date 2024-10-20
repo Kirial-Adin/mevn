@@ -1,0 +1,30 @@
+@import './colors.css';
+
+input {
+    border: none;
+    border-bottom: 3px solid var(--color);
+    background: transparent;
+    width: 100%;
+    padding: 3px;
+    font-weight: bold;
+}:focus {
+    outline: none;
+    transform: scale(1.01);
+}
+
+::-webkit-input-placeholder { /* Chrome */
+    color: var(--color);
+    font-weight: bold;
+  }
+  :-ms-input-placeholder { /* IE 10+ */
+    color: var(--color);
+    font-weight: bold;
+  }
+  ::-moz-placeholder { /* Firefox 19+ */
+    color: var(--color);
+    font-weight: bold;
+  }
+  :-moz-placeholder { /* Firefox 4 - 18 */
+    color: var(--color);
+    font-weight: bold;
+  }
