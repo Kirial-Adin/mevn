@@ -8,11 +8,12 @@ export const useFileStore = defineStore('fileStore', () => {
     files: [],
     currentDir: null,
   })
+  const uploadFiles = ref([])
   const stackDir = ref([])
 
-  const getFiles = async (dirId: any) => {
+  const getFiles = async (dirId: any, sort: string) => {
     try {
-      const response = await FileService.getFiles(dirId)
+      const response = await FileService.getFiles(dirId, sort)
       console.log(response.data)
       dirInfo.value = {
         files: response.data,
@@ -31,6 +32,7 @@ export const useFileStore = defineStore('fileStore', () => {
         files: response.data,
         currentDir: dirId
       }
+      uploadFiles.value.push(response.data)
     } catch (e: any) {
       alert(e.response.data.message)
     }
@@ -60,6 +62,7 @@ export const useFileStore = defineStore('fileStore', () => {
         files: response.data,
         currentDir: dirId
       }
+      uploadFiles.value.push(response.data)
       location.reload()
     } catch (e: any) {
       alert(e.response.data.message)
@@ -81,9 +84,14 @@ export const useFileStore = defineStore('fileStore', () => {
       console.log(e)
     }
   }
+  const removeUploader = (fileId: any) => {
+    uploadFiles.value = uploadFiles.value.filter(() => uploadFiles.value[0]._id !== fileId)
+    console.log(uploadFiles.value)
+  }
 
   return {
     dirInfo,
+    uploadFiles,
     getFiles,
     stackDir,
     createDir,
@@ -91,6 +99,7 @@ export const useFileStore = defineStore('fileStore', () => {
     pushToStack,
     uploadFile,
     downloadFile,
-    deleteFile
+    deleteFile,
+    removeUploader
   }
 })
