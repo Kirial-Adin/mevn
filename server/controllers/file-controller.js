@@ -28,11 +28,29 @@ class FileController {
     }
     async getFiles(req, res) {
         try {
-            const files = await File.find({user: req.user.id, parent: req.query.parent})
+            const {sort} = req.query
+            let files
+            switch (sort) {
+                case 'name':
+                    files = await File.find({user: req.user.id, parent: req.query.parent}).sort({name:1})
+                    break
+                case 'type':
+                    files = await File.find({user: req.user.id, parent: req.query.parent}).sort({type:1})
+                    break
+                case 'date':
+                    files = await File.find({user: req.user.id, parent: req.query.parent}).sort({date:1})
+                    break
+                case 'size':
+                    files = await File.find({user: req.user.id, parent: req.query.parent}).sort({size:-1})
+                    break
+                default:
+                    files = await File.find({user: req.user.id, parent: req.query.parent})
+                    break;
+            }
             return res.json(files)
         } catch (e) {
             console.log(e)
-            return res.status(500).json({message: 'Невозможно получить файл'})
+            return res.status(500).json({message: "Невозможно получить файлы"})
         }
     }
     async uploadFile(req, res) {
@@ -94,7 +112,7 @@ class FileController {
             res.status(500).json({message: 'Ошибка при скачивании'})
         }
     }
-    async deleteFile(req, res) {
+    async deleteFile(req, res) {    
         try {
             const file = await File.findOne({_id: req.query.id, user: req.user.id}) 
             if (!file) {
