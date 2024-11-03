@@ -1,8 +1,18 @@
 import $api from '@/http/api'
 
 export default class FileService {
-  static async getFiles(dirId: any) {
-    return $api.get(`api/files${dirId ? '?parent=' + dirId : ''}`, {
+  static async getFiles(dirId: any, sort: string) {
+    let url = `api/files`
+    if (dirId) {
+      url = `api/files?parent=${dirId}`
+    }
+    if (sort) {
+      url = `api/files?sort=${sort}`
+    }
+    if (dirId && sort) {
+      url = `api/files?parent=${dirId}&sort=${sort}`
+    }
+    return $api.get(url, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
@@ -74,5 +84,12 @@ export default class FileService {
     } catch (e: any) {
       alert(e.response?.data?.message)
     }
+  }
+  static async searchFiles(searchName: string) {
+    return $api.get(`api/files/search?search=${searchName}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    })
   }
 }

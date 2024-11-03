@@ -1,15 +1,23 @@
 <script setup>
 import UploadFile from './UploadFile.vue'
-const files = [{id: 1, name: 'file', progress: 0}, {id: 2, name: 'file2', progress: 0}]
+import { computed } from 'vue'
+import { useUploadStore } from '../stores/upload'
+import { useFileStore } from '../stores/file'
+
+const uplodStore = useUploadStore()
+const fileStore = useFileStore()
+const fileList = computed(() => fileStore.uploadFiles)
+const isVisiable = computed(() => uplodStore.uploadInfo.isVisiable) 
+
 </script>
 
 <template>
-    <div class="uploader">
+    <div v-if="isVisiable" class="uploader">
         <div class="uploader__header">
             <div class="uploader__title">Загрузки</div>
-            <button class="uploader__close">X</button>
+            <button @click="uplodStore.hideUploader" class="uploader__close">X</button>
         </div>
-        <UploadFile v-for="file in files" :key="file.id" :file="file"/>
+        <UploadFile v-for="file in fileList" :key="file._id" :file="file"/>
     </div>
 </template>
 

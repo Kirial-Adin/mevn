@@ -1,7 +1,8 @@
 <script setup>
 import dirLogo from '../assets/img/dirLogo.png'
 import fileLogo from '../assets/img/fileLogo.png'
-import { defineProps, ref } from 'vue'
+import sizeFormat from '../utils/sizeFormat'
+import { defineProps, ref, computed } from 'vue'
 import { useFileStore } from '../stores/file'
 
 const props = defineProps({
@@ -9,6 +10,7 @@ const props = defineProps({
 })
 const store = useFileStore()
 const currentDir = ref(props.file._id)
+const fileView = computed(() => store.fileView)
 
 const openDirHandler = async (file) => {
   if (file.type === 'dir') {
@@ -28,21 +30,44 @@ const deleteClickHandler = async (e) => {
 </script>
 
 <template>
-  <div class="file" @click="openDirHandler(file)">
-    <img :src="file.type === 'dir' ? dirLogo : fileLogo" alt="" class="file__image" />
-    <div class="file__name">{{ file.name }}</div>
-    <div class="file__date">{{ file.date.slice(0, 10) }}</div>
-    <div class="file__size">{{ file.size }}</div>
-    <button
-      v-if="file.type !== 'dir'"
-      class="file__btn file__download"
-      @click="(e) => downloadClickHandler(e)"
-    >
-      <img src="../assets/img/cloud-download.png" alt="" />
-    </button>
-    <button class="file__btn file__delete" @click="(e) => deleteClickHandler(e)">
-      <img src="../assets/img/delete.png" alt="" />
-    </button>
+  <div v-if="fileView === 'list'">
+    <div class="file" @click="openDirHandler(file)">
+      <img :src="file.type === 'dir' ? dirLogo : fileLogo" alt="" class="file__image" />
+      <div class="file__name">{{ file.name }}</div>
+      <div class="file__date">{{ file.date.slice(0, 10) }}</div>
+      <div class="file__size">{{ sizeFormat(file.size) }}</div>
+      <button
+        v-if="file.type !== 'dir'"
+        class="file__btn file__download"
+        @click="(e) => downloadClickHandler(e)"
+      >
+        <img src="../assets/img/cloud-download.png" alt="" />
+      </button>
+      <button class="file__btn file__delete" @click="(e) => deleteClickHandler(e)">
+        <img src="../assets/img/delete.png" alt="" />
+      </button>
+    </div>
+  </div>
+  <div v-if="fileView === 'plate'">
+    <div class="file-plate" @click="openDirHandler(file)">
+      <img :src="file.type === 'dir' ? dirLogo : fileLogo" alt="" class="file-plate image" />
+      <div class="file__name file-plate">{{ file.name }}</div>
+      <div class="file-plate btns">
+        <button
+          v-if="file.type !== 'dir'"
+          class="file-plate__btn  file-plate"
+          @click="(e) => downloadClickHandler(e)"
+        >
+          <img src="../assets/img/cloud-download.png" alt="" />
+        </button>
+        <button
+          class="file-plate__btn  file-plate"
+          @click="(e) => deleteClickHandler(e)"
+        >
+          <img src="../assets/img/delete.png" alt="" />
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -94,6 +119,36 @@ const deleteClickHandler = async (e) => {
       grid-column-start: 6;
       display: block;
     }
+  }
+}
+
+.file-plate {
+  width: 150px;
+  height: 150px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .image {
+    height: 80px;
+    width: 80px;
+  }
+  .btns {
+    display: none;
+  }
+  .file-plate__btn {
+    background: none;
+    border: none;
+  }
+}
+
+.file-plate:hover {
+  .btns {
+    margin-top: 3px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
   }
 }
 </style>

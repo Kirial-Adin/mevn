@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import FileService from '../services/FileService'
+import {showLoader} from '../utils/showLoader'
+
+const loader = showLoader
 
 
 export const useFileStore = defineStore('fileStore', () => {
@@ -10,9 +13,11 @@ export const useFileStore = defineStore('fileStore', () => {
   })
   const uploadFiles = ref([])
   const stackDir = ref([])
+  const fileView = ref('list')
 
   const getFiles = async (dirId: any, sort: string) => {
     try {
+      loader.value = !loader.value
       const response = await FileService.getFiles(dirId, sort)
       console.log(response.data)
       dirInfo.value = {
@@ -21,6 +26,8 @@ export const useFileStore = defineStore('fileStore', () => {
       }
     } catch (e: any) {
       alert(e.response.data.message)
+    } finally{
+      loader.value = !loader.value
     }
   }
 
@@ -38,9 +45,9 @@ export const useFileStore = defineStore('fileStore', () => {
     }
   }
 
-  const openDir = async(dirId: any) => {
+  const openDir = async(dirId: any, sort: string) => {
     try {
-      const response = await FileService.getFiles(dirId)
+      const response = await FileService.getFiles(dirId, sort)
       dirInfo.value = {
         files: response.data,
         currentDir: dirId
@@ -76,6 +83,7 @@ export const useFileStore = defineStore('fileStore', () => {
       alert(e.response.data.message)
     }
   }
+
   const deleteFile = async (file: any) => {
     try {
       const response = await FileService.deleteFile(file)
@@ -84,9 +92,26 @@ export const useFileStore = defineStore('fileStore', () => {
       console.log(e)
     }
   }
+
   const removeUploader = (fileId: any) => {
     uploadFiles.value = uploadFiles.value.filter(() => uploadFiles.value[0]._id !== fileId)
     console.log(uploadFiles.value)
+  }
+
+  const searchFiles = async(searchName: string, dirId: any,) => {
+    try {
+      loader.value = !loader.value
+      const response = await FileService.searchFiles(searchName)
+      dirInfo.value = {
+        files: response.data,
+        currentDir: dirId
+      }
+    } catch(e: any) {
+      alert(e.response.data.message)
+    } finally {
+      loader.value = !loader.value
+    }
+    
   }
 
   return {
@@ -100,6 +125,8 @@ export const useFileStore = defineStore('fileStore', () => {
     uploadFile,
     downloadFile,
     deleteFile,
-    removeUploader
+    removeUploader,
+    searchFiles,
+    fileView,
   }
 })

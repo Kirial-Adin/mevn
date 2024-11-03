@@ -1,5 +1,9 @@
 <script setup>
 import {defineProps} from 'vue'
+import { useFileStore } from '../stores/file'
+
+const fileStore = useFileStore()
+
 defineProps({
     file: Object
 })
@@ -7,13 +11,13 @@ defineProps({
 
 <template>
     <div class="upload-file">
-        <div class="header">
+        <div class="upload__header">
             <div class="name">{{ file.name }}</div>
-            <button class="remove">X</button>
+            <button @click="fileStore.removeUploader(file._id)" class="remove">X</button>
         </div>
         <div class="progress-bar">
-            <div class="upload-bar"></div>
-            <div class="percent">{{ file.progress }}</div>
+            <div class="upload-bar" :style="{width: `${file.progress}%`}"></div>
+            <div class="percent">{{ file.progress }}%</div>
         </div>
     </div>
 </template>
@@ -25,16 +29,26 @@ defineProps({
     border-radius: 8px;
     margin: 5px 0;
     padding: 5px 10px;
-    .header{
+
+    .upload__header {
         display: flex;
         justify-content: space-between;
     }
-    .progress-bar{
-        height: 1rem;
+    .progress-bar{ 
+        height: 1.25rem;
         border-radius: 8px;
         background-color: var(--color);
         display: flex;
         margin: 3px 0;
+    }
+    .upload-bar{
+        background-color: green;
+        border-radius: 8px;
+    }
+    .percent{
+        color: var(--background-color);
+        left: 50%;
+        position: absolute;
     }
 }
 </style>
