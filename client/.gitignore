@@ -28,3 +28,8 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+server/static
+server/files
+files
+static

@@ -2,7 +2,7 @@
 import dirLogo from '../assets/img/dirLogo.png'
 import fileLogo from '../assets/img/fileLogo.png'
 import sizeFormat from '../utils/sizeFormat'
-import { defineProps, ref, computed } from 'vue'
+import { defineProps, ref, computed, onMounted } from 'vue'
 import { useFileStore } from '../stores/file'
 
 const props = defineProps({
@@ -11,6 +11,8 @@ const props = defineProps({
 const store = useFileStore()
 const currentDir = ref(props.file._id)
 const fileView = computed(() => store.fileView)
+const fileDate = computed(() => props.file.date)
+
 
 const openDirHandler = async (file) => {
   if (file.type === 'dir') {
@@ -27,6 +29,7 @@ const deleteClickHandler = async (e) => {
   e.stopPropagation()
   await store.deleteFile(props.file)
 }
+
 </script>
 
 <template>
@@ -34,7 +37,7 @@ const deleteClickHandler = async (e) => {
     <div class="file" @click="openDirHandler(file)">
       <img :src="file.type === 'dir' ? dirLogo : fileLogo" alt="" class="file__image" />
       <div class="file__name">{{ file.name }}</div>
-      <div class="file__date">{{ file.date.slice(0, 10) }}</div>
+      <div class="file__date">{{ fileDate.slice(0, 10) }}</div>
       <div class="file__size">{{ sizeFormat(file.size) }}</div>
       <button
         v-if="file.type !== 'dir'"

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import FileService from '../services/FileService'
 import {showLoader} from '../utils/showLoader'
 
@@ -18,8 +18,8 @@ export const useFileStore = defineStore('fileStore', () => {
   const getFiles = async (dirId: any, sort: string) => {
     try {
       loader.value = !loader.value
-      const response = await FileService.getFiles(dirId, sort)
-      console.log(response.data)
+      const response =  await FileService.getFiles(dirId, sort)
+      // console.log(response.data)
       dirInfo.value = {
         files: response.data,
         currentDir: dirId
@@ -40,6 +40,7 @@ export const useFileStore = defineStore('fileStore', () => {
         currentDir: dirId
       }
       uploadFiles.value.push(response.data)
+      location.reload()
     } catch (e: any) {
       alert(e.response.data.message)
     }

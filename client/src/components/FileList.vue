@@ -6,11 +6,13 @@ import { computed } from 'vue'
 const store = useFileStore()
 const filesList = computed(() => store.dirInfo.files)
 const fileView = computed(() => store.fileView)
+const length = filesList.value.length
+
 </script>
 
 <template>
   <div v-if="fileView === 'list'">
-    <div class="files" v-if="filesList.length === 0">
+    <div class="files" v-if="length === 0">
       <div>Файлы не найдены</div>
     </div>
     <div v-else class="filelist">
@@ -20,8 +22,8 @@ const fileView = computed(() => store.fileView)
         <div class="filelist__size">Размер</div>
       </div>
       <transition-group name="file" tag="div" class="animation">
-        <div v-for="file in filesList" :key="file._id">
-          <File :file="file" />
+        <div v-for="file in {...filesList}" :key="file._id">
+          <File :file="file"  />
         </div>
       </transition-group>
     </div>

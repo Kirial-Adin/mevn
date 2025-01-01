@@ -7,6 +7,7 @@ import {showLoader} from '../utils/showLoader'
 import { ref, computed, onMounted } from 'vue'
 import { useFileStore } from '../stores/file'
 
+
 const store = useFileStore()
 const currentDir = computed(() => store.dirInfo.currentDir)
 const display = ref('none')
@@ -76,7 +77,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Header />
   <div v-if="loader" class="loader">
     <div class="lds-default">
       <div></div>
@@ -191,7 +191,7 @@ onMounted(async () => {
   }
 }
 .drop-area {
-  width: 100%;
+  width: 130vh;
   height: calc(100vh - 60px - 40px);
   margin: 20px;
   border: 2px dashed var(--color);

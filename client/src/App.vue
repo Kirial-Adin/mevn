@@ -1,20 +1,21 @@
 <script setup>
-import Header  from './components/Header.vue';
-import {onMounted} from 'vue';
-import { useCoreStore } from './stores/auth.ts';
-import { RouterView } from 'vue-router';
+import Header from './components/Header.vue'
+import { onMounted } from 'vue'
+import { useCoreStore } from './stores/auth.ts'
+import { RouterView } from 'vue-router'
 
-const store = useCoreStore();
+const store = useCoreStore()
 
-
-onMounted(async() => {
+onMounted(async () => {
   await store.checkAuth()
-});
-
+  await store.getAvatar()
+})
 </script>
 
 <template>
-  <div class="app">
+  <div  class="app">
+    <Header />
+
     <RouterView />
   </div>
 </template>

@@ -1,5 +1,7 @@
 <script setup>
 import Logo from '../assets/img/navbar-logo.svg'
+import avatarLogo from '../assets/img/avatar.png'
+import { API_URL } from '@/http/api'
 import { computed, ref } from 'vue'
 import { useCoreStore } from '../stores/auth'
 import { useFileStore } from '../stores/file'
@@ -8,7 +10,10 @@ const coreStore = useCoreStore()
 const fileStore = useFileStore()
 const currentDir = computed(() => fileStore.dirInfo.currentDir)
 const isAuth = computed(() => coreStore.userInfo.isAuth)
+const currentAvatar = computed(() => coreStore.avatar)
+// const currentAvatar = 'fb25b309-c7fe-42e5-840e-60da86a55282.jpg'
 const searchName = ref('')
+const avatar = computed(() => currentAvatar.value ? `${API_URL + currentAvatar.value}` : avatarLogo)
 
 async function searchFilesHandler() {
   if (searchName.value !== '') {
@@ -42,6 +47,9 @@ const logout = async () => {
           placeholder="Название файла..."
         />
         <a @click="logout">Выход</a>
+        <router-link to="/profile">
+          <img class="avatar" :src="avatar" alt="">
+        </router-link>
       </div>
     </div>
   </div>
@@ -87,6 +95,13 @@ const logout = async () => {
 a {
   text-decoration: none;
   cursor: pointer;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-left: 10px;
 }
 
 @media screen and (max-width: 950px) {

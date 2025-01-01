@@ -1,8 +1,8 @@
 const fileService = require('../services/file-service');
 const File = require('../models/file-model');
 const User = require('../models/user-model');
-const mongoose = require('mongoose')
 const fs = require('fs')
+const uuid = require('uuid');
 
 class FileController {
     async createDir(req, res) {
@@ -16,7 +16,7 @@ class FileController {
             } else {
                 file.path = `${parentFile.path}\\${file.name}`
                 await fileService.createDir(file)
-                parentFile.childs.push(new mongoose.Types.ObjectId(file._id))
+                parentFile.childs.push(file._id)
                 await parentFile.save()
             }
             await file.save()
@@ -135,6 +135,43 @@ class FileController {
         } catch(e) {
             console.log(e)
             return res.status(400).json({message: 'Ошибка поиска'})
+        }
+    }
+    async uploadAvatar(req, res) {
+        try {
+            const file = req.files.file
+            const user = await User.findById(req.user.id)
+            const avatarName = uuid.v4() + '.jpg'
+            file.mv(process.env.STATIC_PATH + '\\' + avatarName)
+            user.avatar = avatarName
+            await user.save()
+            return res.json(user)
+        } catch (e) {
+            console.log(e)
+            return res.status(400).json({message: 'Ошибка загрузки аватара'})
+        }
+    }
+    async deleteAvatar(req, res) {
+        try {
+            const user = await User.findById(req.user.id)
+            fs.unlinkSync(process.env.STATIC_PATH + '\\' + user.avatar)
+            user.avatar = null
+            await user.save()
+            return res.json(user)
+        } catch (e) {
+            console.log(e)
+            return res.status(400).json({message: 'Ошибка удаления аватара'})
+        }
+    }
+    async getAvatar(req, res) {
+        try {
+            const user = await User.findById(req.user.id)
+            // const avatar = fs.readFileSync(process.env.STATIC_PATH + '\\' + user.avatar)
+            const avatar = user.avatar
+            return res.json(avatar)
+        } catch (e) {
+            console.log(e)
+            return res.status(400).json({message: 'Ошибка получения аватара'})
         }
     }
 }

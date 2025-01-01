@@ -12,14 +12,14 @@ export default class FileService {
     if (dirId && sort) {
       url = `api/files?parent=${dirId}&sort=${sort}`
     }
-    return $api.get(url, {
+    return await $api.get(url, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     })
   }
   static async createDir(dirId: any, name: string) {
-    return $api.post(
+    const response = await $api.post(
       `api/files`,
       {
         name,
@@ -32,6 +32,7 @@ export default class FileService {
         }
       }
     )
+    return (response)
   }
   static async uploadFile(file: any, dirId: any) {
     const formData = new FormData()
@@ -91,5 +92,45 @@ export default class FileService {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     })
+  }
+  static async uploadAvatar(file: any) {
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const response = await $api.post('api/files/avatar', formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      alert('Аватар успешно загружен')
+      return (response.data)
+    } catch (e: any) {
+      alert(e.response?.data?.message)
+    }
+  }
+  static async deleteAvatar() {
+    try {
+      const response = await $api.delete('api/files/avatar', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      alert('Аватар успешно удалён')
+      return response.data
+    } catch (e: any) {
+      alert(e.response?.data?.message)
+    }
+  }
+  static async getAvatar() {
+    try {
+      const response = await $api.get('api/files/avatar', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      return (response.data)
+    } catch (e: any) {
+      console.log(e.response?.data?.message)
+    }
   }
 }

@@ -1,8 +1,8 @@
 require('dotenv').config()
 const express = require("express");
 const mongoose = require("mongoose");
-const authRouter = require("./routes/auth.routes");
-const fileRouter = require("./routes/file.routes");
+const authRouter = require("./routes/auth-routes");
+const fileRouter = require("./routes/file-routes");
 const fileUpload = require("express-fileupload")
 const cookieParser = require('cookie-parser')
 const cors = require("cors");
@@ -16,6 +16,7 @@ app.use(cors({
     credentials: true,
     origin: 'http://localhost:5173'
 }))
+app.use(express.static('./static'))
 app.use(cookieParser())
 app.use("/api/auth", authRouter);
 app.use("/api/files", fileRouter);

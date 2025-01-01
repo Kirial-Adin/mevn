@@ -1,21 +1,22 @@
 import { defineStore } from 'pinia'
 import { router } from '@/main'
 import type { IUser } from '../models/IUser'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { API_URL } from '../http/api'
 import axios from 'axios'
 import type { AuthResponse } from '../models/response/AuthResponse'
 import AuthService from '../services/AuthService'
+import FileService from '../services/FileService'
+
 
 export const useCoreStore = defineStore('rootStore', () => {
   const userInfo = ref({
     user: {} as IUser,
-    isAuth: false
+    isAuth: false,
   })
-  const fileInfo = ref({
-    files: [],
-    currentDir: ''
-  })
+  const avatar = ref('')
+  
+  
   const registration = async (email: string, password: string) => {
     try {
       const response = await AuthService.registration(email, password)
@@ -23,7 +24,7 @@ export const useCoreStore = defineStore('rootStore', () => {
       localStorage.setItem('token', response.data.accessToken)
       userInfo.value = {
         user: response.data.user,
-        isAuth: true
+        isAuth: true,
       }
       router.replace('/')
     } catch (e: any) {
@@ -38,7 +39,7 @@ export const useCoreStore = defineStore('rootStore', () => {
       localStorage.setItem('token', response.data.accessToken)
       userInfo.value = {
         user: response.data.user,
-        isAuth: true
+        isAuth: true,
       }
       router.replace('/')
     } catch (e: any) {
@@ -69,33 +70,48 @@ export const useCoreStore = defineStore('rootStore', () => {
       localStorage.setItem('token', response.data.accessToken)
       userInfo.value = {
         user: response.data.user,
-        isAuth: true
+        isAuth: true,
       }
       console.log(userInfo.value.isAuth)
     } catch (e: any) {
       console.log(e.response?.data?.message)
     }
   }
-  const getFiles = async (currentDir: string ) => {
+  
+  const uploadAvatar = async (file: any) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/files${currentDir ? '?parent=' + currentDir : ''}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-      })
-      console.log(response.data)
+      const response = await FileService.uploadAvatar(file)
+      console.log(response.avatar)
+      avatar.value = response.avatar
+      console.log(avatar.value)
     } catch (e: any) {
-      alert(e.response.data.message)
+      console.log(e)
     }
+  }
+  const deleteAvatar = async () => {
+    try {
+      console.log(avatar.value)
+      await FileService.deleteAvatar()
+      avatar.value = ''
+    } catch (e: any) {
+      console.log(e)
+    }
+  }
+  const getAvatar = async () => {
+    const response = await FileService.getAvatar()
+    // console.log(response)
+    avatar.value = response
   }
 
   return {
     userInfo,
-    fileInfo,
+    avatar,
     registration,
     login,
     checkAuth,
     logout,
-    getFiles
+    uploadAvatar,
+    deleteAvatar,
+    getAvatar
   }
 })
