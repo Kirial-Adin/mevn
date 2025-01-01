@@ -30,7 +30,7 @@ coverage
 *.tsbuildinfo
 
 .env
-env
+server/.env
 server/static
 server/files
 files
