@@ -1,0 +1,7 @@
+{
+    "serverPort": 5000,
+    "dbUrl": "mongodb+srv://Kirial:admin@mevn-cloud.9lfhtep.mongodb.net/?retryWrites=true&w=majority&appName=MEVN-cloud",
+    "secretKey": "mevn-sec-key",
+    "JWT_ACCESS_SECRET": "json-secret-key-link",
+    "JWT_REFRESH_SECRET": "\"json-refresh-secret-key-link\""
+}
